@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../features/products/presentation/cubits/product_details_cubit.dart';
 import '../../features/products/presentation/cubits/products_cubit.dart';
 import '../../features/products/presentation/pages/product_details_page.dart';
 import '../../features/products/presentation/pages/products_page.dart';
@@ -44,7 +46,12 @@ class AppRouter {
               ),
             );
           }
-          return ProductDetailsPage(productId: productId);
+          //return ProductDetailsPage(productId: productId);
+          return BlocProvider<ProductDetailsCubit>(
+            create: (_) =>
+                sl<ProductDetailsCubit>()..loadProductDetails(productId),
+            child: ProductDetailsPage(productId: productId),
+          );
         },
       ),
     ],

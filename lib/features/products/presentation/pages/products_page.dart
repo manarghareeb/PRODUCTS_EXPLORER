@@ -62,68 +62,60 @@ class _ProductsPageState extends State<ProductsPage> {
           ),
         ),
       ),
-      body: const _ProductsBodySection(),
-    );
-  }
-}
+      
+      body: BlocBuilder<ProductsCubit, ProductsState>(
+        builder: (context, state) {
+          final cubit = context.read<ProductsCubit>();
 
-class _ProductsBodySection extends StatelessWidget {
-  const _ProductsBodySection();
+          switch (state.status) {
+            case ProductsStatus.initial:
+            case ProductsStatus.loading:
+              return const ProductsSkeletonGrid();
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProductsCubit, ProductsState>(
-      builder: (context, state) {
-        final cubit = context.read<ProductsCubit>();
-
-        switch (state.status) {
-          case ProductsStatus.initial:
-          case ProductsStatus.loading:
-            return const ProductsSkeletonGrid();
-
-          case ProductsStatus.error:
-            return AppErrorView(
-              message:
-                  state.errorMessage ??
-                  'Failed to load products. Please check your connection.',
-              onRetry: () => cubit.retry(),
-            );
-
-          case ProductsStatus.empty:
-            if (state.isSearching) {
-              return AppEmptyView(
-                title: 'No Products Found',
+            case ProductsStatus.error:
+              return AppErrorView(
                 message:
-                    'No products match "${state.searchQuery}". Try searching for something else.',
-                icon: Icons.search_off_rounded,
-                actionText: 'Clear Search',
-                onAction: () => cubit.clearSearch(),
+                    state.errorMessage ??
+                    'Failed to load products. Please check your connection.',
+                onRetry: () => cubit.retry(),
               );
-            }
-            return AppEmptyView(
-              title: 'No Products Available',
-              message:
-                  'The catalog is currently empty. Please check back later.',
-              icon: Icons.inventory_2_outlined,
-              actionText: 'Refresh',
-              onAction: () => cubit.loadProducts(),
-            );
 
-          case ProductsStatus.success:
-            return ProductGrid(
-              products: state.products,
-              paginationStatus: state.paginationStatus,
-              paginationErrorMessage: state.paginationErrorMessage,
-              hasMore: state.hasMore,
-              onLoadMore: () => cubit.loadMoreProducts(),
-              onRetryPagination: () => cubit.retryPagination(),
-              onProductTap: (product) {
-                context.push('/products/${product.id}');
-              },
-              onRefresh: () => cubit.loadProducts(isRefresh: true),
-            );
-        }
-      },
+            case ProductsStatus.empty:
+              if (state.isSearching) {
+                return AppEmptyView(
+                  title: 'No Products Found',
+                  message:
+                      'No products match "${state.searchQuery}". Try searching for something else.',
+                  icon: Icons.search_off_rounded,
+                  actionText: 'Clear Search',
+                  onAction: () => cubit.clearSearch(),
+                );
+              }
+              return AppEmptyView(
+                title: 'No Products Available',
+                message:
+                    'The catalog is currently empty. Please check back later.',
+                icon: Icons.inventory_2_outlined,
+                actionText: 'Refresh',
+                onAction: () => cubit.loadProducts(),
+              );
+
+            case ProductsStatus.success:
+              return ProductGrid(
+                products: state.products,
+                paginationStatus: state.paginationStatus,
+                paginationErrorMessage: state.paginationErrorMessage,
+                hasMore: state.hasMore,
+                onLoadMore: () => cubit.loadMoreProducts(),
+                onRetryPagination: () => cubit.retryPagination(),
+                onProductTap: (product) {
+                  context.push('/products/${product.id}');
+                },
+                onRefresh: () => cubit.loadProducts(isRefresh: true),
+              );
+          }
+        },
+      ),
     );
   }
 }
