@@ -230,8 +230,7 @@ flutter run -d windows
 
 | Products Explorer Grid | Product Details View | Search & Loading State |
 | :---: | :---: | :---: |
-| <img width="720" height="1600" alt="WhatsApp Image 2026-10-20 at 11 43 00 PM(1)" src="https://github.com/user-attachments/assets/c63d0b2c-994b-48e2-b65a-01207c3970cb" /> | <img width="720" height="1600" alt="WhatsApp Image 2026-10-20 at 11 43 00 PM(3)" src="https://github.com/user-attachments/assets/a9a606bc-3474-4e25-8f31-803584955664" /> 
-| <img width="720" height="1600" alt="WhatsApp Image 2026-10-20 at 11 43 00 PM" src="https://github.com/user-attachments/assets/69f8a42b-e75a-4673-b958-2b77242e1335" /> |
+| <img width="720" height="1600" alt="WhatsApp Image 2026-10-20 at 11 43 00 PM(1)" src="https://github.com/user-attachments/assets/c63d0b2c-994b-48e2-b65a-01207c3970cb" /> | <img width="720" height="1600" alt="WhatsApp Image 2026-10-20 at 11 43 00 PM(3)" src="https://github.com/user-attachments/assets/a9a606bc-3474-4e25-8f31-803584955664" /> | <img width="720" height="1600" alt="WhatsApp Image 2026-10-20 at 11 43 00 PM" src="https://github.com/user-attachments/assets/69f8a42b-e75a-4673-b958-2b77242e1335" /> |
 ---
 
 ## 10. Social Links
