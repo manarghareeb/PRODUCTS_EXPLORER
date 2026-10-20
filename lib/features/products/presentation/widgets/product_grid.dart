@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../domain/entities/product_entity.dart';
 import '../cubits/products_state.dart';
 import 'product_card.dart';
 import 'products_pagination_loader.dart';
 
-/// Responsive grid displaying products with infinite scroll pagination and pull-to-refresh.
 class ProductGrid extends StatefulWidget {
   final List<ProductEntity> products;
   final PaginationStatus paginationStatus;
@@ -47,7 +45,6 @@ class _ProductGridState extends State<ProductGrid> {
 
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    // Trigger next page when user scrolls within 300px of bottom
     const threshold = 300.0;
 
     if (maxScroll - currentScroll <= threshold) {
@@ -105,8 +102,6 @@ class _ProductGridState extends State<ProductGrid> {
                   }, childCount: widget.products.length),
                 ),
               ),
-
-              // Bottom pagination loader or error retry
               SliverToBoxAdapter(
                 child: ProductsPaginationLoader(
                   status: widget.paginationStatus,

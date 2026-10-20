@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../core/theme/app_colors.dart';
 
-/// Skeleton placeholder grid displayed during initial loading.
 class ProductsSkeletonGrid extends StatefulWidget {
   const ProductsSkeletonGrid({super.key});
 

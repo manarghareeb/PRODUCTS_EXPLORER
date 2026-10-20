@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_style.dart';
 import '../cubits/products_state.dart';
 
-/// Bottom widget showing pagination progress or retry action upon pagination failure.
 class ProductsPaginationLoader extends StatelessWidget {
   final PaginationStatus status;
   final String? errorMessage;
@@ -101,7 +99,6 @@ class ProductsPaginationLoader extends StatelessWidget {
         ),
       );
     }
-
     return SizedBox(height: 16.h);
   }
 }

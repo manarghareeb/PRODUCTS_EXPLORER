@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_style.dart';
 
-/// Search input bar with dedicated clear button and debounced callback support.
 class ProductSearchField extends StatefulWidget {
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
