@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_debouncer/flutter_debouncer.dart'; 
 import '../../domain/entities/products_response_entity.dart';
 import '../../domain/usecases/get_products.dart';
 import '../../domain/usecases/search_products.dart';
@@ -11,9 +12,9 @@ class ProductsCubit extends Cubit<ProductsState> {
   final SearchProductsUseCase searchProductsUseCase;
 
   static const int pageSize = 20;
-  static const Duration searchDebounceDuration = Duration(milliseconds: 350);
+  static const Duration searchDebounceDuration = Duration(milliseconds: 500);
 
-  Timer? _debounceTimer;
+  final Debouncer _debouncer = Debouncer();
   CancelToken? _cancelToken;
   int _requestId = 0;
 
@@ -23,7 +24,7 @@ class ProductsCubit extends Cubit<ProductsState> {
   }) : super(const ProductsState());
 
   Future<void> loadProducts({bool isRefresh = false}) async {
-    _debounceTimer?.cancel();
+    _debouncer.cancel(); 
     _cancelToken?.cancel('Reloading products');
     _cancelToken = CancelToken();
     final currentRequestId = ++_requestId;
@@ -76,7 +77,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         );
       },
       (response) {
-        _handleInitialLoadSuccess(response);
+        handleInitialLoadSuccess(response);
       },
     );
   }
@@ -88,9 +89,8 @@ class ProductsCubit extends Cubit<ProductsState> {
       return;
     }
 
-    _debounceTimer?.cancel();
-
     if (trimmed.isEmpty) {
+      _debouncer.cancel();
       emit(
         state.copyWith(
           searchQuery: '',
@@ -102,23 +102,26 @@ class ProductsCubit extends Cubit<ProductsState> {
       return;
     }
 
-    _debounceTimer = Timer(searchDebounceDuration, () {
-      _performSearch(trimmed);
-    });
+    _debouncer.debounce(
+      duration: searchDebounceDuration,
+      onDebounce: () {
+        performSearch(trimmed);
+      },
+    );
   }
 
   void searchNow(String query) {
     final trimmed = query.trim();
-    _debounceTimer?.cancel();
+    _debouncer.cancel();
     if (trimmed.isEmpty) {
       clearSearch();
     } else {
-      _performSearch(trimmed);
+      performSearch(trimmed);
     }
   }
 
   void clearSearch() {
-    _debounceTimer?.cancel();
+    _debouncer.cancel();
     emit(
       state.copyWith(
         searchQuery: '',
@@ -129,7 +132,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     loadProducts();
   }
 
-  Future<void> _performSearch(String query) async {
+  Future<void> performSearch(String query) async {
     _cancelToken?.cancel('New search query');
     _cancelToken = CancelToken();
     final currentRequestId = ++_requestId;
@@ -164,12 +167,12 @@ class ProductsCubit extends Cubit<ProductsState> {
         );
       },
       (response) {
-        _handleInitialLoadSuccess(response);
+        handleInitialLoadSuccess(response);
       },
     );
   }
 
-  void _handleInitialLoadSuccess(ProductsResponseEntity response) {
+  void handleInitialLoadSuccess(ProductsResponseEntity response) {
     if (response.products.isEmpty) {
       emit(
         state.copyWith(
@@ -273,7 +276,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     if (state.paginationStatus == PaginationStatus.error) {
       retryPagination();
     } else if (state.isSearching) {
-      _performSearch(state.searchQuery);
+      performSearch(state.searchQuery);
     } else {
       loadProducts();
     }
@@ -281,7 +284,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   @override
   Future<void> close() {
-    _debounceTimer?.cancel();
+    _debouncer.cancel();
     _cancelToken?.cancel('ProductsCubit closed');
     return super.close();
   }
